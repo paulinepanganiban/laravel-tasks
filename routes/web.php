@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 /**
     * Show Task Dashboard
@@ -25,12 +28,11 @@ Route::get('/', function () {
     // Simple cache-aside logic
     if (Cache::has('tasks')) {
         $data = Cache::get('tasks');
-        return view('tasks', ['tasks' => $data, 'elapsed' => microtime(true) - $startTime]);
     } else {
         $data = Task::orderBy('created_at', 'asc')->get();
         Cache::add('tasks', $data);
-        return view('tasks', ['tasks' => $data, 'elapsed' => microtime(true) - $startTime]);
     }
+    return view('tasks', ['tasks' => $data, 'elapsed' => microtime(true) - $startTime]);
 });
 
 /**
